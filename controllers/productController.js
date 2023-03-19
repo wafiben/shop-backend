@@ -26,13 +26,18 @@ const getProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
   const product = req.body;
-  const { nameProduct, price, unitType, quantity } = product;
+
+  /*   headers: {
+    Accept: 'application/json',
+    'Content-Type': 'multipart/form-data',
+  } */
   try {
-    const newProduct = new Product({
-      nameProduct: nameProduct,
-      price: price,
-      unitType: unitType,
-      quantity: quantity,
+    const newProduct = await new Product({
+      nameProduct: product.nameProduct,
+      price: product.price,
+      unitType: product.unitType,
+      quantity: product.quantity,
+      SelectedFile: req.file.filename,
     });
     const newP = await newProduct.save();
     res.status(200).json({ id: newP._id });
@@ -40,6 +45,9 @@ const createProduct = async (req, res) => {
     res.status(500).json({ msg: "failed" });
   }
 };
+
+
+
 const updateProduct = () => {};
 const deleteProduct = () => {};
 const getMyProducts = () => {};

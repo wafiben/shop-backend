@@ -5,12 +5,9 @@ const {
   getProduct,
   createProduct,
 } = require("../controllers/productController");
+const upload = require("../midelwares/upload");
 
 router.get("/product", getProduct);
-router.post("/product", createProduct);
-/*  router.get("/person/:id", getProduct); */
-/* 
-router.delete("/person/:id", deleteProduct);
-router.put("/person/:id", updateProduct);  */
+router.post("/product", upload.single("SelectedFile"), createProduct);
 
 module.exports = router;

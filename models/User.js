@@ -5,5 +5,6 @@ const userSchema = new mongoose.Schema({
   email: { type: email, required: true, unique: true },
   password: { type: password, required: true, unique: true },
   role: ["admin", "client", "company"],
+  googleId:String,
 });
 module.exports = mongoose.model(userSchema, "user");

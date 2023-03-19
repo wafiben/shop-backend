@@ -4,5 +4,8 @@ const productSchema = mongoose.Schema({
   price: { type: Number, required: true },
   unitType: { type: String, required: true },
   quantity: { type: Number, required: true },
+  SelectedFile: {
+    type: String,
+  },
 });
 module.exports = mongoose.model("product", productSchema);
