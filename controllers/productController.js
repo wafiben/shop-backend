@@ -14,8 +14,9 @@ const getProduct = async (req, res) => {
         res.status(200).json({ products: searchedProducts });
       }
     } else if (id) {
-      const foundProduct = products.find((elt) => elt._id == id);
-      res.status(400).json({ products: foundProduct });
+      const foundProduct = await Product.findById(id);
+      console.log({ foundProduct });
+      res.status(200).json({ products: foundProduct });
     } else {
       res.status(200).json({ products });
     }
@@ -26,11 +27,6 @@ const getProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
   const product = req.body;
-
-  /*   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'multipart/form-data',
-  } */
   try {
     const newProduct = await new Product({
       nameProduct: product.nameProduct,
@@ -46,10 +42,34 @@ const createProduct = async (req, res) => {
   }
 };
 
+const modifyProduct = async (req, res) => {
+  const product = req.body;
+  const updatedProduct = {
+    nameProduct: product.nameProduct,
+    price: product.price,
+    unitType: product.unitType,
+    quantity: product.quantity,
+  };
+  const { id } = req.params;
+  try {
+    const updatedPost = await Product.findByIdAndUpdate(id, product, {
+      new: true,
+    });
+    res.status(200).json({ product: updatedProduct });
+  } catch (e) {
+    res.status(500).json({ msg: "failed" });
+  }
+};
+const deleteProdect = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Product.findByIdAndDelete(id);
+    res.status(200).json({ msg: "sucessfully deleted" });
+  } catch (error) {
+    res.status(500).json({ msg: "failed" });
+  }
+};
 
-
-const updateProduct = () => {};
-const deleteProduct = () => {};
 const getMyProducts = () => {};
 
-module.exports = { getProduct, createProduct };
+module.exports = { getProduct, createProduct, deleteProdect, modifyProduct };
