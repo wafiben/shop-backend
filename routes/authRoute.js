@@ -5,9 +5,11 @@ const router = express.Router();
 const {
   registerController,
   loginController,
+  getProfile
 } = require("../controllers/authController");
 router.post("/login", loginController);
 router.post("/register", registerController);
+router.get('/profile', isAuth, getProfile)
 router.get("/x", isAuth, isCompany, (req, res) => {
   res.send("hey");
 });

@@ -1,6 +1,16 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const getProfile = async (req, res) => {
+  try {
+    res.status(200).json({ user: req.user })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
 const registerController = async (request, response) => {
   console.log("there");
   let user = request.body;
@@ -72,4 +82,4 @@ const loginController = async (request, response) => {
   }
 };
 
-module.exports = { registerController, loginController };
+module.exports = { registerController, loginController, getProfile };
