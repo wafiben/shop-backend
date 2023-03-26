@@ -12,36 +12,36 @@ const getProfile = async (req, res) => {
 
 
 const registerController = async (request, response) => {
-  console.log("there");
-  let user = request.body;
+  let userInfo = request.body;
   try {
-    const searchedUser = await User.findOne({ email: user.email });
+    const searchedUser = await User.findOne({ email: userInfo.email });
     if (searchedUser) {
       return response
         .status(400)
         .json({ errors: [{ msg: "user already exists" }] });
     } else {
-      const hashedPasword = await bcrypt.hash(user.password, 10);
-      const newUser = await new User({
-        role: user.role,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
+      const hashedPasword = await bcrypt.hash(userInfo.password, 10);
+      const user = await new User({
+        role: userInfo.role,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        email: userInfo.email,
         password: hashedPasword,
+        phone: userInfo.phone
       });
-      await newUser.save();
+      console.log({ user })
+      await user.save();
       const token = jwt.sign(
         {
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          email: newUser.email,
-          id: newUser._id,
-          role: newUser.role,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          id: user._id,
+          role: user.role,
         },
         process.env.KEY
       );
-      console.log("token", token);
-      response.status(200).json({ newUser, token });
+      response.status(200).json({ user, token });
     }
   } catch (error) {
     response.status(500).json({ errors: [{ msg: "error server" }] });
