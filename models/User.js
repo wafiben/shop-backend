@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema({
   nameOfComany: { type: String },
   zipCode: Number,
   country: String,
-  domain: String
+  domain: String,
+  state: String,
+  country: String,
+  region: String,
 });
 module.exports = mongoose.model("User", userSchema);

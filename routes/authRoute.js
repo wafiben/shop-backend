@@ -5,10 +5,12 @@ const router = express.Router();
 const {
   registerController,
   loginController,
-  getProfile
+  getProfile,
+  registerControllerCompany
 } = require("../controllers/authController");
 router.post("/login", loginController);
 router.post("/register", registerController);
+router.post("/register-company", registerControllerCompany);
 router.get('/profile', isAuth, getProfile)
 router.get("/x", isAuth, isCompany, (req, res) => {
   res.send("hey");

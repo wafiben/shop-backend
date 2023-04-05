@@ -29,7 +29,6 @@ const registerController = async (request, response) => {
         password: hashedPasword,
         phone: userInfo.phone
       });
-      console.log({ user })
       await user.save();
       const token = jwt.sign(
         {
@@ -82,4 +81,45 @@ const loginController = async (request, response) => {
   }
 };
 
-module.exports = { registerController, loginController, getProfile };
+const registerControllerCompany = async (request, response) => {
+  let userInfo = request.body;
+  try {
+    const searchedUser = await User.findOne({ email: userInfo.email });
+    if (searchedUser) {
+      return response
+        .status(400)
+        .json({ errors: [{ msg: "user already exists" }] });
+    } else {
+      const hashedPasword = await bcrypt.hash(userInfo.password, 10);
+      const user = await new User({
+        role: userInfo.role,
+        nameOfComany: userInfo.nameOfComany,
+        email: userInfo.email,
+        password: hashedPasword,
+        phone: userInfo.phone,
+        domain: userInfo.domain,
+        country: userInfo.country,
+        state: userInfo.country,
+        region: userInfo.region,
+        zipCode: userInfo.zipCode,
+      });
+      await user.save();
+      const token = jwt.sign(
+        {
+          email: user.email,
+          id: user._id,
+          role: user.role,
+        },
+        process.env.KEY
+      );
+      response.status(200).json({ user, token });
+    }
+  } catch (error) {
+    response.status(500).json({ errors: [{ msg: "error server" }] });
+  }
+};
+
+
+
+
+module.exports = { registerController, loginController, getProfile, registerControllerCompany };
