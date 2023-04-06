@@ -34,6 +34,7 @@ const createProduct = async (req, res) => {
       unitType: product.unitType,
       quantity: product.quantity,
       SelectedFile: req.file.filename,
+      user: req.user._id,
     });
     const newP = await newProduct.save();
     res.status(200).json({ id: newP._id });
@@ -70,6 +71,21 @@ const deleteProdect = async (req, res) => {
   }
 };
 
-const getMyProducts = () => {};
+const getPostsOfUser = async (req, res) => {
+  try {
+    const allProducts = await Product.find();
+    const productUser = allProducts.filter(
+      (product) =>
+        product.user && product.user.toString() === req.user._id.toString()
+    );
+    if (productUser.length > 0) {
+      res.status(200).json({ products: productUser });
+    } else {
+      res.status(400).json({ msg: "you do not have any product" });
+    }
+  } catch (error) {
+    res.status(500).json({ msg: "failed to get posts" });
+  }
+};
 
-module.exports = { getProduct, createProduct, deleteProdect, modifyProduct };
+module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getPostsOfUser };
