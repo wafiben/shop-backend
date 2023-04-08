@@ -4,6 +4,7 @@ const app = express();
 const port = 5000;
 const productRoute = require("./routes/productRoute");
 const authRoute = require("./routes/authRoute.js");
+const companyRoute = require('./routes/companyRoute.js')
 require("dotenv").config();
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded());
@@ -18,3 +19,5 @@ app.listen(port, (e) => {
 });
 app.use("/api", productRoute);
 app.use("/api", authRoute);
+app.use("/api", companyRoute);
+

@@ -73,18 +73,14 @@ const deleteProdect = async (req, res) => {
 
 const getPostsOfUser = async (req, res) => {
   try {
-    const allProducts = await Product.find();
-    const productUser = allProducts.filter(
-      (product) =>
-        product.user && product.user.toString() === req.user._id.toString()
-    );
-    if (productUser.length > 0) {
+    const productUser = await Product.find({ user: { $eq: req.user._id } });
+    if (productUser.length !== 0) {
       res.status(200).json({ products: productUser });
-    } else {
-      res.status(400).json({ msg: "you do not have any product" });
+    } else if (productUser.length === 0) {
+      res.status(204).json({ msg: "you do not have any product" });
     }
   } catch (error) {
-    res.status(500).json({ msg: "failed to get posts" });
+    res.status(500).json({ msg: "failed to get products" });
   }
 };
 

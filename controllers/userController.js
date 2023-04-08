@@ -1,6 +1,31 @@
 const User = require("../models/User");
-const getUser = async (req, res) => {
-  const { letter, id } = req.query;
+const getAllCompany = async (req, res) => {
+  try {
+    const companies = await User.find({ role: ['company'] });
+    res.status(200).json({ companies })
+  } catch (error) {
+    res.status(500).json({ msg: "failed to get companies" })
+  }
+
+};
+const getOneCompany = async (req, res) => {
+  try {
+    const company = await User.findById(req.params.id);
+    res.status(200).json({ company })
+  } catch (error) {
+    res.status(500).json({ msg: "get company failed" })
+  }
+}
+
+module.exports = { getAllCompany, getOneCompany };
+
+
+
+
+
+
+
+/* const { letter, id } = req.query;
   try {
     const users = await User.find();
     if (letter) {
@@ -21,7 +46,4 @@ const getUser = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ msg: "operationof gettAllPersons is failed" });
-  }
-};
-
-module.exports = { getUser };
+  } */

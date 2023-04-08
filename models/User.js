@@ -14,6 +14,5 @@ const userSchema = new mongoose.Schema({
   state: String,
   country: String,
   region: String,
-
 });
 module.exports = mongoose.model("User", userSchema);

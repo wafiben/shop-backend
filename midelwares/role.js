@@ -1,3 +1,4 @@
+
 const isAdmin = (req, res, next) => {
   try {
     if (req.user.role[0] === "admin") {
@@ -10,10 +11,13 @@ const isAdmin = (req, res, next) => {
 };
 const isClient = (req, res, next) => {
   try {
-    if (req.user.role === "client") {
+    if (req.user.role[0] === "client") {
       next();
     }
-    res.status(400).json({ msg: " not authorized" });
+    else {
+      res.status(400).json({ msg: " not authorized ,only authorized for client" });
+    }
+
   } catch (error) {
     res.status(500).json({ msg: "failed" });
   }
