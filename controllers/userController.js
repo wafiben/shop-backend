@@ -17,6 +17,8 @@ const getOneCompany = async (req, res) => {
   }
 }
 
+
+
 module.exports = { getAllCompany, getOneCompany };
 
 

@@ -71,17 +71,30 @@ const deleteProdect = async (req, res) => {
   }
 };
 
-const getPostsOfUser = async (req, res) => {
+const getPostsOfUser = async (req, res) => {//myposts
   try {
     const productUser = await Product.find({ user: { $eq: req.user._id } });
     if (productUser.length !== 0) {
       res.status(200).json({ products: productUser });
     } else if (productUser.length === 0) {
-      res.status(204).json({ msg: "you do not have any product" });
+      res.status(300).json({ msg: "you do not have any product" });
     }
   } catch (error) {
     res.status(500).json({ msg: "failed to get products" });
   }
 };
+const getProductsOfSpeceficCompany = async (req, res) => {
+  try {
+    const idOfCompany = req.params.id;
+    const products = await Product.find({ user: { $eq: idOfCompany } });
+    if (products.length !== 0) {
+      res.status(200).json({ products: products });
+    } else if (products.length === 0) {
+      res.status(300).json({ msg: "this company does not have any products yet" });
+    }
+  } catch (error) {
+    res.status(500).json({ msg: "get  product of company is failed" });
+  }
+}
 
-module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getPostsOfUser };
+module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getPostsOfUser, getProductsOfSpeceficCompany };
