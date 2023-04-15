@@ -11,7 +11,7 @@ const isAuth = async (request, response, next) => {
     request.user = user;
     next();
   } catch (error) {
-    response.status(500).json({ msg: "error" });
+    response.status(500).json({ msg: "error authorization" });
   }
 };
 module.exports = isAuth;

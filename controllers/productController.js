@@ -45,20 +45,23 @@ const createProduct = async (req, res) => {
 
 const modifyProduct = async (req, res) => {
   const product = req.body;
-  const updatedProduct = {
-    nameProduct: product.nameProduct,
-    price: product.price,
-    unitType: product.unitType,
-    quantity: product.quantity,
-  };
   const { id } = req.params;
   try {
-    const updatedPost = await Product.findByIdAndUpdate(id, product, {
+    console.log({ product })
+    let productForUpdated = {
+      nameProduct: product.nameProduct,
+      price: product.price,
+      unitType: product.unitType,
+      quantity: product.quantity,
+      SelectedFile: req.file.filename,
+      user: req.user._id,
+    };
+    const updatedProduct = await Product.findByIdAndUpdate(id, productForUpdated, {
       new: true,
     });
     res.status(200).json({ product: updatedProduct });
   } catch (e) {
-    res.status(500).json({ msg: "failed" });
+    res.status(500).json({ msg: "update is failed" });
   }
 };
 const deleteProdect = async (req, res) => {
@@ -71,7 +74,7 @@ const deleteProdect = async (req, res) => {
   }
 };
 
-const getPostsOfUser = async (req, res) => {//myposts
+const getProductsOfCompany = async (req, res) => {//myposts
   try {
     const productUser = await Product.find({ user: { $eq: req.user._id } });
     if (productUser.length !== 0) {
@@ -97,4 +100,4 @@ const getProductsOfSpeceficCompany = async (req, res) => {
   }
 }
 
-module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getPostsOfUser, getProductsOfSpeceficCompany };
+module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getProductsOfCompany, getProductsOfSpeceficCompany };

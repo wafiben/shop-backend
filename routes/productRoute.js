@@ -5,7 +5,7 @@ const {
   createProduct,
   deleteProdect,
   modifyProduct,
-  getPostsOfUser,
+  getProductsOfCompany,
   getProductsOfSpeceficCompany
 } = require("../controllers/productController");
 const { isCompany, isClient } = require("../midelwares/role");
@@ -15,7 +15,7 @@ const upload = require("../midelwares/upload");
 router.get("/product", getProduct);
 router.post("/product", upload.single("SelectedFile"), isAuth, isCompany, createProduct);
 router.delete("/product/:id", deleteProdect);
-router.put("/product/:id", modifyProduct);
-router.get("/product-company", isAuth, isCompany, getPostsOfUser);//myposts
+router.put("/product/:id", upload.single("SelectedFile"), isAuth, isCompany, modifyProduct);
+router.get("/productscompany", isAuth, isCompany, getProductsOfCompany);//myposts
 router.get("/product_user_company/:id", isAuth, isClient, getProductsOfSpeceficCompany);
 module.exports = router;
