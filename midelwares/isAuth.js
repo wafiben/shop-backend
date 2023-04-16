@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const isAuth = async (request, response, next) => {
+  console.log('isAth there')
   try {
     const token = request.header("token");
-    const verifyToken = await jwt.verify(token, process.env.KEY);
+    const verifyToken = jwt.verify(token, process.env.KEY);
     if (!verifyToken) {
-      return response.status(401).json({ message: "you are authorized" });
+      return response.status(401).json({ message: "you are unauthorized" });
     }
     const user = await User.findById(verifyToken.id);
     request.user = user;

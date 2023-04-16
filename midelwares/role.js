@@ -22,7 +22,7 @@ const isClient = (req, res, next) => {
     res.status(500).json({ msg: "failed" });
   }
 };
-const isCompany = (req, res, next) => {
+const isCompany =async (req, res, next) => {
   try {
     if (req.user.role[0] === "company") {
       next();

@@ -33,6 +33,7 @@ const createProduct = async (req, res) => {
       price: product.price,
       unitType: product.unitType,
       quantity: product.quantity,
+      show: product.show,
       SelectedFile: req.file.filename,
       user: req.user._id,
     });
@@ -47,14 +48,13 @@ const modifyProduct = async (req, res) => {
   const product = req.body;
   const { id } = req.params;
   try {
-    console.log({ product })
     let productForUpdated = {
       nameProduct: product.nameProduct,
       price: product.price,
       unitType: product.unitType,
       quantity: product.quantity,
       SelectedFile: req.file.filename,
-      user: req.user._id,
+      user: req.user._id.toString(),
     };
     const updatedProduct = await Product.findByIdAndUpdate(id, productForUpdated, {
       new: true,
@@ -76,11 +76,11 @@ const deleteProdect = async (req, res) => {
 
 const getProductsOfCompany = async (req, res) => {//myposts
   try {
-    const productUser = await Product.find({ user: { $eq: req.user._id } });
+    const productUser = await Product.find({ user: { $eq: req.user._id.toString() } });
     if (productUser.length !== 0) {
-      res.status(200).json({ products: productUser });
-    } else if (productUser.length === 0) {
-      res.status(300).json({ msg: "you do not have any product" });
+      return res.status(200).json({ products: productUser });
+    } else {
+      res.status(400).json({ msg: "you do not have any product" });
     }
   } catch (error) {
     res.status(500).json({ msg: "failed to get products" });
@@ -99,5 +99,20 @@ const getProductsOfSpeceficCompany = async (req, res) => {
     res.status(500).json({ msg: "get  product of company is failed" });
   }
 }
+const handleShowProduct = async (req, res) => {
+  const { id } = req.params
+  try {
+    const product = await Product.findById(id);
+    const update = product.show ? false : true
+    const updatedProduct = { ...product._doc, show: update }
+    const doc = await Product.findOneAndUpdate({ _id: id }, updatedProduct, {
+      new: true
+    });
+    const products = await Product.find({ user: { $eq: req.user._id } });
+    res.status(200).json({ products })
+  } catch (error) {
+    res.status(500).json({ msg: "show  product is failed" });
+  }
+}
 
-module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getProductsOfCompany, getProductsOfSpeceficCompany };
+module.exports = { getProduct, createProduct, deleteProdect, modifyProduct, getProductsOfCompany, getProductsOfSpeceficCompany, handleShowProduct };
