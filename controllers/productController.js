@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const User = require('../models/User')
 
 const getProduct = async (req, res) => {
   const { letter, id } = req.query;
@@ -37,6 +38,10 @@ const createProduct = async (req, res) => {
       SelectedFile: req.file.filename,
       user: req.user._id,
     });
+
+    const user = await User.findById(req.user._id).populate('products');
+    user.products.push(newProduct);
+    await user.save()
     const newP = await newProduct.save();
     res.status(200).json({ id: newP._id });
   } catch (error) {
