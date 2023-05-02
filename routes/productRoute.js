@@ -13,7 +13,7 @@ const { isCompany, isClient } = require("../midelwares/role");
 const isAuth = require('../midelwares/isAuth')
 const upload = require("../midelwares/upload");
 router.get("/product", getProduct);
-router.post("/product", upload.single("SelectedFile"), isAuth, isCompany, createProduct);
+router.post("/product", upload.single("SelectedFile"), isAuth, createProduct);
 router.delete("/product/:id", deleteProdect);
 router.put("/product/:id", upload.single("SelectedFile"), isAuth, isCompany, modifyProduct);
 router.get("/company-products", isAuth, getProductsOfCompany);//myposts

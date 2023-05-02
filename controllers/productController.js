@@ -27,6 +27,7 @@ const getProduct = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+  console.log('there')
   const product = req.body;
   try {
     const newProduct = await new Product({
@@ -38,12 +39,12 @@ const createProduct = async (req, res) => {
       SelectedFile: req.file.filename,
       user: req.user._id,
     });
-
     const user = await User.findById(req.user._id).populate('products');
     user.products.push(newProduct);
     await user.save()
-    const newP = await newProduct.save();
-    res.status(200).json({ id: newP._id });
+    await newProduct.save();
+    res.status(200).json({ user })
+    /*    res.status(200).json({ id: newP._id }); */
   } catch (error) {
     res.status(500).json({ msg: "failed" });
   }
