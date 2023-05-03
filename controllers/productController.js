@@ -27,7 +27,6 @@ const getProduct = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  console.log('there')
   const product = req.body;
   try {
     const newProduct = await new Product({
