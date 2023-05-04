@@ -19,4 +19,18 @@ const updateProfile=async (req,res) => {
 		res.status(500).json({msg: "update user is failed"});
 	}
 }
-module.exports={updateProfile}
+
+
+
+const checkPassword=async (req,res) => {
+	const id=req.user.id.toString();
+	const {password}=req.body
+	try {
+		const user=await User.findById(id);
+		const result=await bcrypt.compare(password,user.password);
+		res.status(200).json({result})
+	} catch(error) {
+		res.status(500).json({msg: "check password failed"});
+	}
+}
+module.exports={updateProfile,checkPassword}
