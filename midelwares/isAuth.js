@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const isAuth = async (request, response, next) => {
-  console.log('isAth there')
   try {
     const token = request.header("token");
     const verifyToken = jwt.verify(token, process.env.KEY);
