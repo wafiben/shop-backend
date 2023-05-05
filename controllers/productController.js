@@ -2,27 +2,15 @@ const Product=require("../models/product");
 const User=require('../models/User')
 
 const getProduct=async (req,res) => {
-	const {letter,id}=req.query;
+	const {id}=req.params
 	try {
-		const products=await Product.find();
-		if(letter) {
-			const searchedProducts=products.filter((elt) =>
-				elt.nameProduct.toLowerCase().includes(letter.toLowerCase())
-			);
-			if(searchedProducts.length===0) {
-				res.status(400).json({msg: "no product with this name"});
-			} else {
-				res.status(200).json({products: searchedProducts});
-			}
-		} else if(id) {
-			const foundProduct=await Product.findById(id);
-			console.log({foundProduct});
-			res.status(200).json({products: foundProduct});
-		} else {
-			res.status(200).json({products});
+		const product=await Product.findById(id);
+		if(!product) {
+			return res.status(404).json({msg: "Product not found"})
 		}
+		return res.status(200).json({product})
 	} catch(error) {
-		res.status(500).json({msg: "operationof gettAllPersons is failed"});
+		res.status(500).json({msg: "get product failed"})
 	}
 };
 
