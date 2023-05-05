@@ -1,13 +1,25 @@
-const multer = require("multer");
+const multer=require("multer");
+const {GridFsStorage}=require("multer-gridfs-storage");
 const path = require("path");
-const storage = multer.diskStorage({
-  destination: "../client/public/imageProducts",
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
-  },
+
+const storage=new GridFsStorage({
+	url: "mongodb+srv://wafi:54900777@cluster0.ewu3a.mongodb.net/?retryWrites=true&w=majority",
+	options: {useNewUrlParser: true,useUnifiedTopology: true},
+	file: (req,file) => {
+		const match=["image/png","image/jpeg","image/jpg"];
+
+		if(match.indexOf(file.mimetype)===-1) {
+			const filename=`${Date.now()}-image${path.extname(file.originalname)}`;
+			return filename;
+		}
+
+		return {
+			bucketName: "photos",
+			filename: `${Date.now()}-image${path.extname(file.originalname)}`,
+		};
+	},
 });
-const upload = multer({ storage: storage });
-module.exports = upload;
+
+const upload=multer({storage});
+
+module.exports=upload;

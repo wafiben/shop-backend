@@ -5,7 +5,8 @@ const productSchema = mongoose.Schema({
   unitType: { type: String, required: true },
   quantity: { type: Number, required: true },
   SelectedFile: {
-    type: String,
+	data: Buffer, 
+    contentType: String 
   },
   user: {
     type: String,

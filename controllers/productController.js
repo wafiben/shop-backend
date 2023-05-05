@@ -1,5 +1,8 @@
 const Product=require("../models/product");
-const User=require('../models/User')
+const User=require('../models/User');
+const fs=require("fs");
+const path = require('path');
+
 
 const getProduct=async (req,res) => {
 	const {letter,id}=req.query;
@@ -29,15 +32,17 @@ const getProduct=async (req,res) => {
 const createProduct=async (req,res) => {
 	const product=req.body;
 	try {
-		const newProduct=await new Product({
+		const newProduct=new Product({
 			nameProduct: product.nameProduct,
 			price: product.price,
 			unitType: product.unitType,
 			quantity: product.quantity,
 			show: product.show,
-			SelectedFile: req.file.filename,
 			user: req.user._id,
 		});
+		const file=req.file;
+		newProduct.SelectedFile.data=fs.readFileSync(file.path);
+		newProduct.SelectedFile.contentType=file.mimetype;
 		const user=await User.findById(req.user._id).populate('products');
 		user.products.push(newProduct);
 		await user.save()
