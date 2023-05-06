@@ -1,5 +1,6 @@
 const Product=require("../models/product");
-const User=require('../models/User')
+const User=require('../models/User');
+const mongoose=require('mongoose');
 
 const getProduct=async (req,res) => {
 	const {id}=req.params
@@ -36,26 +37,68 @@ const createProduct=async (req,res) => {
 	}
 };
 
+
 const modifyProduct=async (req,res) => {
-	const product=req.body;
+	const productInfo=req.body;
 	const {id}=req.params;
 	try {
 		let productForUpdated={
-			nameProduct: product.nameProduct,
-			price: product.price,
-			unitType: product.unitType,
-			quantity: product.quantity,
+			nameProduct: productInfo.nameProduct,
+			price: Number(productInfo.price),
+			unitType: productInfo.unitType,
+			quantity: Number(productInfo.quantity),
 			SelectedFile: req.file.filename,
-			user: req.user._id.toString(),
-		};
-		const updatedProduct=await Product.findByIdAndUpdate(id,productForUpdated,{
-			new: true,
+			user: req.user._id,
+		}
+		const product=await Product.findById(id);
+		const updatedProduct={...product._doc,...productForUpdated}
+		const doc=await Product.findOneAndUpdate({_id: id},updatedProduct,{
+			new: true
 		});
-		res.status(200).json({product: updatedProduct});
+		const user=await User.findById(req.user.id).populate('products');
+		res.status(200).json({products: user.products})
+
+
+
+
+
+
+
+		// Update product in the User's document
+		/*const user=await User.findById(req.user._id).populate('products');*/
+		/*	const element=user.products.find((elt) => elt.id.toString()===id);*/
+		/*	await Product.findByIdAndDelete(id)
+			await user.products.pull(id);
+			user.products.push(productForUpdated)
+			return res.status(200).json({user})*/
+		/*console.log("===>",user)*/
+
+
+		/*console.log(element);*/
+		/*console.log({index})*/
+		/*	if(index!==-1) {
+				console.log('sssss')
+				user.products.splice(index,1,productForUpdated);
+				updatedUser=await user.save();
+			}*/
+
+		/*res.status(200).json({products: updatedUser.products});*/
 	} catch(e) {
+		console.log(e.message)
 		res.status(500).json({msg: "update is failed"});
 	}
 };
+
+const getPro=async (req,res) => {
+	try {
+		const products=await Product.find();
+		res.status(200).json({products})
+	} catch(error) {
+		res.status(500).json({msg: "error"})
+	}
+}
+
+
 const deleteUserProduct=async (req,res) => {
 	const productId=req.params.id;
 	const userId=req.user._id;
@@ -66,9 +109,9 @@ const deleteUserProduct=async (req,res) => {
 
 		// Remove product from User collection
 		const user=await User.findById(userId).populate('products');
-		user.products.pull(productId);
-		const userWithoutProduct=await user.save();
-		res.status(200).json({products: userWithoutProduct.products});
+		/*user.products.pull(productId);
+		const userWithoutProduct=await user.save();*/
+		res.status(200).json({products: user.products});
 	} catch(error) {
 		res.status(500).json({msg: "failed"});
 	}
@@ -116,4 +159,4 @@ const handleShowProduct=async (req,res) => {
 	}
 }
 
-module.exports={getProduct,createProduct,modifyProduct,getProductsOfCompany,getProductsOfSpeceficCompany,handleShowProduct,deleteUserProduct};
+module.exports={getProduct,createProduct,modifyProduct,getProductsOfCompany,getProductsOfSpeceficCompany,handleShowProduct,deleteUserProduct,getPro};

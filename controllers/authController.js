@@ -51,7 +51,10 @@ const loginController = async (request, response) => {
   const userInfo = request.body;
   try {
     //search for user
-    const user = await User.findOne({ email: userInfo.email });
+    const user = await User.findOne({ email: userInfo.email }).populate({
+		path: 'products',
+		model: 'product'
+	})
     if (!user) {
       return response
         .status(401)
