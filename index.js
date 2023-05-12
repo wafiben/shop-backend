@@ -16,9 +16,17 @@ app.use(express.json());
 app.use(cors());
 connectDB();
 
+
 app.listen(port,(e) => {
 	e? console.log(e):console.log(`server is running on port ${port}`);
 });
+/*User.updateMany({},{$set: {ban: false}},(err,result) => {
+	if(err) {
+		console.error(err);
+	} else {
+		console.log(`${result.nModified} user records updated`);
+	}
+});*/
 app.use("/api",adminRoute);
 app.use("/api",productRoute);
 app.use("/api",authRoute);
