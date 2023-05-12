@@ -1,9 +1,9 @@
 const User=require('../models/User')
 const getAllCompanies=async (req,res) => {
 	try {
-		const companies=await User.find({role: ['company']});
+		const companies=await User.find({role: ['company']}).select('-password -products');
 		if(companies.length!==0) {
-			return res.status(200).json({companies})
+			return res.status(200).json({users: companies})
 		} else {
 			return res.status(404).json({msg: "no company exist yet"})
 		}
@@ -14,7 +14,7 @@ const getAllCompanies=async (req,res) => {
 }
 const getAllClients=async (req,res) => {
 	try {
-		const users=await User.find({role: ['client']});
+		const users=await User.find({role: ['client']}).select('-password -products');
 		if(users.length!==0) {
 			return res.status(200).json({users})
 		} else {
