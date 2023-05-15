@@ -15,8 +15,6 @@ const cors=require("cors");
 app.use(express.json());
 app.use(cors());
 connectDB();
-
-
 app.listen(port,(e) => {
 	e? console.log(e):console.log(`server is running on port ${port}`);
 });
