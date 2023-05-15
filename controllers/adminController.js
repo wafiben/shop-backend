@@ -92,8 +92,6 @@ const banCompany=async (req,res) => {
 				{role: ['company']} // select users where role is 'client'
 			]
 		}).select('-password -products');
-
-
 		res.status(200).json({users: companies,activatedUser,bannedUser})
 	} catch(error) {
 		res.status(500).json({msg: "ban user company is feild"})
