@@ -38,43 +38,60 @@ const checkPassword=async (req,res) => {
 
 const getvalidationCodeIntheEmail=async (req,res) => {
 	const {email}=req.body;
-
 	try {
-		// Find the user with the given email
 		const user=await User.findOne({email});
-
 		if(!user) {
 			return res.status(404).json({error: 'User not found'});
 		}
-
 		const code=Math.floor(100000+Math.random()*900000);
-		/**/
-
 		const transporter=nodemailer.createTransport({
-			// Replace with your SMTP server details
+			host: "wafibnjd@gmail.com",
 			service: "gmail",
 			auth: {
 				user: 'wafibnjd@gmail.com', // Replace with your email address
-				pass: '54900777', // Replace with your email password
+				pass: 'iilyhkrmdnblzrlj', // Replace with your email password
 			},
+			tls: {
+				rejectUnauthorized: true,
+				minVersion: "TLSv1.2"
+			}
 		});
+		user.validationCode=code;
+		await user.save();
 
 		// Set up the email content
 		const mailOptions={
 			from: 'wafibnjd@gmail.com', // Replace with the sender email address
 			to: email,
 			subject: 'Validation Code',
-			text: `Please enter the following validation code in the appropriate field on our website to proceed:\n\n${code}`,
+			html: `<p>Please set this code on the website to be able to activate the operation:</p>
+			<p><strong>${code}</strong></p>`,
 		};
+		transporter.sendMail(mailOptions,(error,info) => {
+			if(error) {
+				res.status(404).json({msg: "failed to send email"})
+			} else {
 
+				res.status(200).json({message: 'check the email , the code was sent to your email'});
+			}
+		});
 
-		const x=await transporter.sendMail(mailOptions)
-		console.log({x})
-		res.status(200).json({message: 'Email sent with instructions for password reset'});
 	} catch(error) {
-		console.error(error);
 		res.status(500).json({error: 'Server error'});
 	}
 }
-module.exports={updateProfile,checkPassword,getvalidationCodeIntheEmail}
+const checkValidationCode=async (req,res) => {
+	const {code,email}=req.body
+	try {
+		const user=await User.findOne({email});
+		if(!user) {
+			return res.status(404).json({error: 'User not found'});
+		}
+		const result=user.validationCode==code
+		res.status(200).json({result})
+	} catch(error) {
+		res.status(500).json({error: 'check code validation is failed '});
+	}
+}
+module.exports={updateProfile,checkPassword,getvalidationCodeIntheEmail,checkValidationCode}
 
