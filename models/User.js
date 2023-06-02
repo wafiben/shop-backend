@@ -18,6 +18,9 @@ const userSchema=new mongoose.Schema({
 	ban: {
 		type: Boolean,
 		default: false
-	}
+	},
+	resetPasswordToken: String,
+	resetPasswordExpires: Date,
+
 });
 module.exports=mongoose.model("User",userSchema);
