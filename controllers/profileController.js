@@ -41,7 +41,7 @@ const getvalidationCodeIntheEmail=async (req,res) => {
 	try {
 		const user=await User.findOne({email});
 		if(!user) {
-			return res.status(404).json({error: 'User not found'});
+			return res.status(404).json({msg: 'User not found'});
 		}
 		const code=Math.floor(100000+Math.random()*900000);
 		const transporter=nodemailer.createTransport({
@@ -71,13 +71,12 @@ const getvalidationCodeIntheEmail=async (req,res) => {
 			if(error) {
 				res.status(404).json({msg: "failed to send email"})
 			} else {
-
-				res.status(200).json({message: 'check the email , the code was sent to your email'});
+				res.status(200).json({msg: 'check the email , the code was sent to your email'});
 			}
 		});
 
 	} catch(error) {
-		res.status(500).json({error: 'Server error'});
+		res.status(500).json({msg: 'Server error'});
 	}
 }
 const checkValidationCode=async (req,res) => {
@@ -108,10 +107,9 @@ const resetPassword=async (req,res) => {
 			return res.status(300).json({msg: "code invalid"})
 		} else {
 			const hashedPassword=await bcrypt.hash(password,10);
-			const x=await User.findOneAndUpdate({email: email},{...user,password: hashedPassword},{
-				new: true
-			});
-			return res.status(200).json({msg: "reset password is done",x})
+			user.password=hashedPassword;
+			await user.save();
+			return res.status(200).json({msg: "reset password is done"})
 		}
 	} catch(error) {
 		console.error(error)

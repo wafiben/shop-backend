@@ -84,7 +84,7 @@ const loginController=async (request,response) => {
 		//compare the passwordl of the user request with the password saved on the databse (searchedUser)
 
 	} catch(error) {
-		response.status(500).json({message: "login failed"});
+		response.status(500).json({msg: "login failed"});
 	}
 };
 
