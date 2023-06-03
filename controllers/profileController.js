@@ -93,5 +93,30 @@ const checkValidationCode=async (req,res) => {
 		res.status(500).json({error: 'check code validation is failed '});
 	}
 }
-module.exports={updateProfile,checkPassword,getvalidationCodeIntheEmail,checkValidationCode}
+
+
+
+const resetPassword=async (req,res) => {
+	const {email,code,password}=req.body
+	try {
+		const user=await User.findOne({email});
+		if(!user) {
+			return res.status(404).json({msg: 'User not found'});
+		}
+		const result=user.validationCode==code
+		if(!result) {
+			return res.status(300).json({msg: "code invalid"})
+		} else {
+			const hashedPassword=await bcrypt.hash(password,10);
+			const x=await User.findOneAndUpdate({email: email},{...user,password: hashedPassword},{
+				new: true
+			});
+			return res.status(200).json({msg: "reset password is done",x})
+		}
+	} catch(error) {
+		console.error(error)
+		res.status(500).json({msg: 'reset password is failed'});
+	}
+}
+module.exports={updateProfile,checkPassword,getvalidationCodeIntheEmail,checkValidationCode,resetPassword}
 
