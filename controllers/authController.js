@@ -56,7 +56,7 @@ const loginController=async (request,response) => {
 		if(!user) {
 			return response
 				.status(401)
-				.json({errors: [{msg: "you must register before"}]});
+				.json({msg: "you must register before"})
 		}
 		else if(user.ban) {
 			return response.status(403).json({msg: 'You have been banned'})
@@ -66,7 +66,7 @@ const loginController=async (request,response) => {
 			if(!result) {
 				return response
 					.status(400)
-					.json({errors: [{msg: "your passwordl is wrong"}]});
+					.json({msg: "wrong password"})
 			}
 			if(result==true) {
 				const token=await jwt.sign(
@@ -84,7 +84,7 @@ const loginController=async (request,response) => {
 		//compare the passwordl of the user request with the password saved on the databse (searchedUser)
 
 	} catch(error) {
-		response.status(500).json({message: "login failed"});
+		response.status(500).json({msg: "login failed"});
 	}
 };
 
