@@ -1,6 +1,7 @@
 const User=require("../models/User");
 const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
+const nodemailer=require('nodemailer');
 const getProfile=async (req,res) => {
 	try {
 		res.status(200).json({user: req.user})
@@ -27,6 +28,36 @@ const registerController=async (request,response) => {
 				password: hashedPasword,
 				phone: userInfo.phone
 			});
+
+
+			const code=Math.floor(100000+Math.random()*900000);
+			const mailOptions={
+				from: 'wafibnjd@gmail.com', // Replace with the sender email address
+				to: userInfo.email,
+				subject: 'Validation Code',
+				html: `<p>Please set this code on the website to be able to activate the operation:</p>
+				<p><strong>${code}</strong></p>`,
+			};
+			const transporter=nodemailer.createTransport({
+				host: "wafibnjd@gmail.com",
+				service: "gmail",
+				auth: {
+					user: 'wafibnjd@gmail.com', // Replace with your email address
+					pass: 'iilyhkrmdnblzrlj', // Replace with your email password
+				},
+				tls: {
+					rejectUnauthorized: true,
+					minVersion: "TLSv1.2"
+				}
+			});
+			transporter.sendMail(mailOptions,(error,info) => {
+				if(error) {
+					res.status(404).json({msg: "failed to send email"})
+				} else {
+					res.status(200).json({msg: 'check the email , the code was sent to your email'});
+				}
+			});
+			user.validationCode=code;
 			await user.save();
 			const token=jwt.sign(
 				{
@@ -41,6 +72,7 @@ const registerController=async (request,response) => {
 			response.status(200).json({user,token});
 		}
 	} catch(error) {
+		console.log(error)
 		response.status(500).json({errors: [{msg: "error server"}]});
 	}
 };
