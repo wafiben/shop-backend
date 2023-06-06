@@ -1,4 +1,6 @@
-const User=require('../models/User')
+const User=require('../models/User');
+const Message=require('../models/Message');
+const nodemailer=require('nodemailer');
 const getAllCompanies=async (req,res) => {
 	try {
 		const companies=await User.find({role: ['company']}).select('-password -products');
@@ -97,6 +99,40 @@ const banCompany=async (req,res) => {
 		res.status(500).json({msg: "ban user company is feild"})
 	}
 }
+const sendMessagetoTheAdmin=async (req,res) => {
+	const {name,email,subject,content}=req.body
+	try {
+		const newMessage=new Message({name,email,content,subject})
+		const mailOptions={
+			from: 'wafibnjd@gmail.com', // Replace with the sender email address
+			to: email,
+			subject: 'Service client response',
+			html: `<h2>We will contact you as soon as possible</h2>`
+		};
+		const transporter=nodemailer.createTransport({
+			host: "wafibnjd@gmail.com",
+			service: "gmail",
+			auth: {
+				user: 'wafibnjd@gmail.com', // Replace with your email address
+				pass: 'iilyhkrmdnblzrlj', // Replace with your email password
+			},
+			tls: {
+				rejectUnauthorized: true,
+				minVersion: "TLSv1.2"
+			}
+		});
+		transporter.sendMail(mailOptions,async (error,info) => {
+			if(error) {
+				return res.status(404).json({msg: "failed to send email"})
+			} else {
+				await newMessage.save()
+				return res.status(200).json({msg: 'message is sucessfully sended to the service client'});
+			}
+		});
+	} catch(e) {
+		res.status(500).json({msg: "send  message is failed"})
+	}
+}
 
 
-module.exports={getAllCompanies,getAllClients,banClient,banCompany}
+module.exports={getAllCompanies,getAllClients,banClient,banCompany,sendMessagetoTheAdmin}
