@@ -3,32 +3,46 @@ const Message=require("../models/Message");
 const nodemailer=require("nodemailer");
 const getAllCompanies=async (req,res) => {
 	try {
-		const companies=await User.find({role: ["company"]}).select(
-			"-password -products"
-		);
-		const activatedUser=await User.find({
-			$and: [
-				{ban: {$ne: true}}, // select users where ban is not true (i.e., false or undefined)
-				{role: ["company"]}, // select users where role is 'client'
-			],
-		}).select("-password -products");
-		const bannedUser=await User.find({
-			$and: [
-				{ban: {$ne: false}}, // select users where ban is not true (i.e., false or undefined)
-				{role: ["company"]}, // select users where role is 'client'
-			],
-		}).select("-password -products");
-		if(companies.length!==0) {
-			return res
-				.status(200)
-				.json({users: companies,activatedUser,bannedUser});
+		const users=await User.find({role: ["company"]}).select("-password -products");
+		if(users.length!==0) {
+			return res.status(200).json({users});
 		} else {
 			return res.status(404).json({msg: "no company exist yet"});
 		}
 	} catch(error) {
-		res.status(500).json({msg: "failed to get companies"});
+		throw new Error("Erro server");
 	}
 };
+
+const getBannedCompanies=async (req,res) => {
+	try {
+		const users=await User.find({
+			$and: [
+				{ban: true}, // select users where ban is not true (i.e., false or undefined)
+				{role: ["company"]}, // select users where role is 'client'
+			],
+		}).select("-password -products");
+
+		return res.status(200).json({users});
+	} catch(error) {
+		res.status(500).json({msg: "failed  banned to get companies"});
+	}
+};
+
+const getActivatedCompanies=async (req,res) => {
+	try {
+		const users=await User.find({
+			$and: [
+				{ban: false}, // select users where ban is not true (i.e., false or undefined)
+				{role: ["company"]}, // select users where role is 'client'
+			],
+		}).select("-password -products");
+		return res.status(200).json({users});
+	} catch(error) {
+		throw new Error("server Error");
+	}
+};
+
 const getAllClients=async (req,res) => {
 	try {
 		const users=await User.find({role: ["client"]}).select(
@@ -108,6 +122,7 @@ const banCompany=async (req,res) => {
 		res.status(500).json({msg: "ban user company is feild"});
 	}
 };
+
 const sendMessagetoTheAdmin=async (req,res) => {
 	const {name,email,subject,content}=req.body;
 	try {
@@ -157,20 +172,22 @@ const sendMessage=async (req,res) => {
 };
 const getMessages=async (req,res) => {
 	try {
-		const messages=await Message.find()
+		const messages=await Message.find();
 		res.status(200).json({messages});
 	} catch(error) {
 		res.status(500).json({msg: "send  message is failed"});
 	}
 };
 
-
 module.exports={
+	getBannedCompanies,
 	getAllCompanies,
+	getActivatedCompanies,
+
 	getAllClients,
 	banClient,
 	banCompany,
 	sendMessagetoTheAdmin,
 	sendMessage,
-	getMessages
+	getMessages,
 };
