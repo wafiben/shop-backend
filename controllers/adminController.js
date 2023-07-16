@@ -3,7 +3,9 @@ const Message=require("../models/Message");
 const nodemailer=require("nodemailer");
 const getAllCompanies=async (req,res) => {
 	try {
-		const users=await User.find({role: ["company"]}).select("-password -products");
+		const users=await User.find({role: ["company"]}).select(
+			"-password -products"
+		);
 		if(users.length!==0) {
 			return res.status(200).json({users});
 		} else {
@@ -178,16 +180,61 @@ const getMessages=async (req,res) => {
 		res.status(500).json({msg: "send  message is failed"});
 	}
 };
+const getLengthTableCompany=async (req,res) => {
+	try {
+		const companyBannedCount=await User.countDocuments({
+			role: "company",
+			ban: true,
+		}).exec();
+		const allCompaniesCount=await User.countDocuments({
+			role: "company",
+		}).exec();
+		const activatedCompaniesCount=await User.countDocuments({
+			role: "company",
+			ban: false,
+		}).exec();
+		res.status(200).json({
+			companyBannedCount,
+			allCompaniesCount,
+			activatedCompaniesCount,
+		});
+	} catch(e) {
+		throw new Error("error server");
+	}
+};
+const getLengthTableClient=async (req,res) => {
+	try {
+		const clientBannedCount=await User.countDocuments({
+			role: "client",
+			ban: true,
+		}).exec();
+		const allClientsCount=await User.countDocuments({
+			role: "client",
+		}).exec();
+		const activatedClientsCount=await User.countDocuments({
+			role: "client",
+			ban: false,
+		}).exec();
+		res.status(200).json({
+			clientBannedCount,
+			allClientsCount,
+			activatedClientsCount
+		});
+	} catch(e) {
+		throw new Error("error server");
+	}
+};
 
 module.exports={
 	getBannedCompanies,
 	getAllCompanies,
 	getActivatedCompanies,
-
+	getLengthTableCompany,
 	getAllClients,
 	banClient,
 	banCompany,
 	sendMessagetoTheAdmin,
 	sendMessage,
 	getMessages,
+	getLengthTableClient
 };
