@@ -218,12 +218,40 @@ const getLengthTableClient=async (req,res) => {
 		res.status(200).json({
 			clientBannedCount,
 			allClientsCount,
-			activatedClientsCount
+			activatedClientsCount,
 		});
 	} catch(e) {
 		throw new Error("error server");
 	}
 };
+const getBannedClients=async (req,res) => {
+	try {
+		const users=await User.find({
+			$and: [
+				{ban: true}, // select users where ban is not true (i.e., false or undefined)
+				{role: ["client"]}, // select users where role is 'client'
+			],
+		}).select("-password -products");
+		return res.status(200).json({users});
+	} catch(error) {
+		throw new Error("error server");
+	}
+};
+const getVerifClients=async (req,res) => {
+	console.log('ssssssssss=======-----////*******')
+	try {
+		const users=await User.find({
+			$and: [
+				{ban: false}, // select users where ban is not true (i.e., false or undefined)
+				{role: ["client"]}, // select users where role is 'client'
+			],
+		}).select("-password -products");
+		console.log({users})
+		return res.status(200).json({users});
+	} catch(error) {
+		throw new Error("error server");
+	}
+}
 
 module.exports={
 	getBannedCompanies,
@@ -236,5 +264,7 @@ module.exports={
 	sendMessagetoTheAdmin,
 	sendMessage,
 	getMessages,
-	getLengthTableClient
+	getLengthTableClient,
+	getBannedClients,
+	getVerifClients
 };
