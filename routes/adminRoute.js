@@ -12,7 +12,9 @@ const {
 	getBannedCompanies,
 	getActivatedCompanies,
 	getLengthTableCompany,
-	getLengthTableClient
+	getLengthTableClient,
+	getBannedClients,
+	getVerifClients
 }=require("../controllers/adminController");
 const {isAdmin}=require("../midelwares/role");
 const isAuth=require("../midelwares/isAuth");
@@ -25,11 +27,19 @@ router.get("/admin_companies_verif",isAuth,isAdmin,getActivatedCompanies);
 //companies
 //clients
 router.get("/admin_clients",isAuth,isAdmin,getAllClients);
+router.get("/admin_client_ban",isAuth,isAdmin,getBannedClients);
+router.get("/admin_client_verif",isAuth,isAdmin,getVerifClients);
+
+
+
+
+
+
 router.put("/admin_clients/:id",isAuth,isAdmin,banClient);
 router.put("/admin_companies/:id",isAuth,isAdmin,banCompany);
 
 router.get('/info_table_length_company',isAuth,isAdmin,getLengthTableCompany);
-router.get('/info_table_length_client',isAuth,isAdmin,getLengthTableClient)
+router.get('/info_table_length_client',isAuth,isAdmin,getLengthTableClient);
 /*router.post('/admin_message',sendMessagetoTheAdmin);*/
 router.post("/admin_message",sendMessage);
 router.get("/admin_message",isAuth,isAdmin,getMessages);
