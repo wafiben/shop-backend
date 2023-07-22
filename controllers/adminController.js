@@ -238,7 +238,6 @@ const getBannedClients=async (req,res) => {
 	}
 };
 const getVerifClients=async (req,res) => {
-	console.log('ssssssssss=======-----////*******')
 	try {
 		const users=await User.find({
 			$and: [
@@ -246,8 +245,16 @@ const getVerifClients=async (req,res) => {
 				{role: ["client"]}, // select users where role is 'client'
 			],
 		}).select("-password -products");
-		console.log({users})
 		return res.status(200).json({users});
+	} catch(error) {
+		throw new Error("error server");
+	}
+}
+const deleteMessage=async (req,res) => {
+	const {id}=req.params
+	try {
+		await Message.findByIdAndDelete(id);
+		return res.status(200).json(true);
 	} catch(error) {
 		throw new Error("error server");
 	}
@@ -266,5 +273,6 @@ module.exports={
 	getMessages,
 	getLengthTableClient,
 	getBannedClients,
-	getVerifClients
+	getVerifClients,
+	deleteMessage
 };
