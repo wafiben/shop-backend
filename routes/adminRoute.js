@@ -7,14 +7,14 @@ const {
 	sendMessagetoTheAdmin,
 	sendMessage,
 	getMessages,
-
 	getAllCompanies,
 	getBannedCompanies,
 	getActivatedCompanies,
 	getLengthTableCompany,
 	getLengthTableClient,
 	getBannedClients,
-	getVerifClients
+	getVerifClients,
+	deleteMessage
 }=require("../controllers/adminController");
 const {isAdmin}=require("../midelwares/role");
 const isAuth=require("../midelwares/isAuth");
@@ -43,4 +43,6 @@ router.get('/info_table_length_client',isAuth,isAdmin,getLengthTableClient);
 /*router.post('/admin_message',sendMessagetoTheAdmin);*/
 router.post("/admin_message",sendMessage);
 router.get("/admin_message",isAuth,isAdmin,getMessages);
+router.delete("/admin_message/:id",isAuth,isAdmin,deleteMessage);
+
 module.exports=router;
