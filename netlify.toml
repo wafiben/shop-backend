@@ -1,0 +1,9 @@
+[build]
+  command = "npm start"
+[dev]
+  command = "npm run dev" # If you have a separate script for development (optional)
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
