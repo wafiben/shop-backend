@@ -1,5 +1,5 @@
 [build]
-  command = "npm install  && npm start"
+  command = "npm install --force  && npm start"
 [dev]
   command = "npm run dev" # If you have a separate script for development (optional)
 
