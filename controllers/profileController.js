@@ -1,6 +1,7 @@
 const User=require('../models/User.js');
 const bcrypt=require('bcryptjs');
 const nodemailer=require('nodemailer');
+
 const updateProfile=async (req,res) => {
 	const userInfo=req.body;
 	const id=req.user._id.toString()
