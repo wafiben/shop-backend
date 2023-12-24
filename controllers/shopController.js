@@ -1,4 +1,9 @@
 const OrderModel = require("../models/Order");
+const {
+  sendNotificationToClient,
+  sendNotificationToCompany,
+} = require("../helpers/notification");
+
 const { ObjectId } = require("mongodb");
 
 const makeOrderAsDraft = async (req, res) => {
@@ -6,7 +11,16 @@ const makeOrderAsDraft = async (req, res) => {
   try {
     const { products, idOfCompany } = req.body;
     const newObjectIdCompany = new ObjectId(idOfCompany);
-
+    await sendNotificationToClient(
+      clientId,
+      "Order",
+      "Order has been sucessfylly sent"
+    );
+    await sendNotificationToCompany(
+      newObjectIdCompany,
+      "Order",
+      "Order recieved"
+    );
     // Create a new order document
     const newOrder = new OrderModel({
       products,
@@ -22,12 +36,14 @@ const makeOrderAsDraft = async (req, res) => {
   } catch (error) {
     console.error("Error creating draft order:", error);
     return res.status(500).json({ error: "Internal server error" });
-  }
+  }                       
 };
-
+                                                                                                  
 const getListOrderOFclient = async (req, res) => {
-  try { 
-    const orders = await OrderModel.find({user: {$eq: req.user._id.toString()}});
+  try {
+    const orders = await OrderModel.find({
+      user: { $eq: req.user._id.toString() },
+    });
     res.status(200).json({ orders });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
@@ -44,5 +60,5 @@ const getListOrderOFCompany = (req, res) => {
 module.exports = {
   makeOrderAsDraft,
   getListOrderOFCompany,
-  getListOrderOFclient
+  getListOrderOFclient,
 };
