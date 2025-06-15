@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+
 const userSchema=new mongoose.Schema({
 	firstName: {type: String},
 	lastName: {type: String},
@@ -23,4 +24,5 @@ const userSchema=new mongoose.Schema({
 	lastNotificationSeen: { type: Date, default: null }, 
 
 });
+
 module.exports=mongoose.model("User",userSchema);

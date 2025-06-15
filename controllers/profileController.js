@@ -117,5 +117,6 @@ const resetPassword=async (req,res) => {
 		res.status(500).json({msg: 'reset password is failed'});
 	}
 }
+
 module.exports={updateProfile,checkPassword,getvalidationCodeIntheEmail,checkValidationCode,resetPassword}
 

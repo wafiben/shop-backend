@@ -133,16 +133,16 @@ const sendMessagetoTheAdmin = async (req, res) => {
   try {
     const newMessage = new Message({ name, email, content, subject });
     const mailOptions = {
-      from: "wafibnjd@gmail.com", // Replace with the sender email address
+      from: "wafibenjeddou@gmail.com", // Replace with the sender email address
       to: email,
       subject: "Service client response",
       html: `<h2>We will contact you as soon as possible</h2>`,
     };
     const transporter = nodemailer.createTransport({
-      host: "wafibnjd@gmail.com",
+      host: "wafibenjddou@gmail.com",
       service: "gmail",
       auth: {
-        user: "wafibnjd@gmail.com", // Replace with your email address
+        user: "wafibenjeddou@gmail.com", // Replace with your email address
         pass: "iilyhkrmdnblzrlj", // Replace with your email password
       },
       tls: {
